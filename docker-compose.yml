@@ -1,0 +1,63 @@
+services:
+  api:
+    build: .
+    container_name: class-schedule-app
+    environment:
+      DB_HOST: postgres
+      DB_USER: schedule_user
+      DB_PASSWORD: schedule_pass
+      DB_PORT: 5432
+      DB_NAME: schedule_db
+      MONGODB_NAME: schedules
+      MONGODB_CLUSTER: mongo
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./backup:/backup"
+    depends_on:
+      - postgres
+    networks:
+      - "backend"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: schedule_db
+      POSTGRES_USER: schedule_user
+      POSTGRES_PASSWORD: schedule_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
