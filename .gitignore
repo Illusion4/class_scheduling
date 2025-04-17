@@ -5,3 +5,10 @@
 /backup
 /src/test/resources/hibernatetest.properties
 /schedule_logs
+
+
+terraform/**/.terraform/
+terraform/**/*.tfstate
+terraform/**/*.hcl
+terraform/**/*.tfstate.backup
+terraform/**/*.tfvars
